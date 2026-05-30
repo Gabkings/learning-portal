@@ -21,4 +21,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "update User u set u.lastLoginAt = :lastLoginDate where u.username = :username")
     int updateLastLoginDate(@Param("username") String username, @Param("lastLoginDate") LocalDateTime lastLoginDate);
 
+    boolean existsByUsernameIgnoreCase(String username);
+
+    boolean existsByEmailIgnoreCase(String email);
+
 }
