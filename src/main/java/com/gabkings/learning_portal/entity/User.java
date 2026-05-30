@@ -4,9 +4,13 @@ import com.gabkings.learning_portal.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -18,7 +22,7 @@ import java.util.List;
         })
 @Getter
 @Setter
-public class User { // implements UserDetails {
+public class User  implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,12 +54,12 @@ public class User { // implements UserDetails {
     @OneToMany(mappedBy = "instructor", cascade = {CascadeType.REMOVE})
     private List<Course> courses;
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//
-//        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-//        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
-//
-//        return grantedAuthorities;
-//    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_"+role.name()));
+        return authorities;
+    }
+
+
 }
