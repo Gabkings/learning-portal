@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig {
 
     private final JwtAuthenticationFilter  jwtAuthenticationFilter;
@@ -33,7 +35,17 @@ public class ApplicationSecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeHttpRequests -> {
-                            authorizeHttpRequests.requestMatchers("/auth/login","/auth/register/**").permitAll();
+                            authorizeHttpRequests.requestMatchers(
+                                    "/auth/login",
+                                    "/auth/register/**",
+                                    "/swagger-ui/**",
+                                    "/swagger-ui.html",
+                                    "/swagger-resources/**",
+                                    "/v3/api-docs/**",
+                                    "/webjars/**",
+                                    "/application-info/**",
+                                    "/actuator/health",
+                                    "/actuator/metrics").permitAll();
                             authorizeHttpRequests.anyRequest().authenticated();
                 })
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
